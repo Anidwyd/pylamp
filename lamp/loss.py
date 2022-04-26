@@ -1,6 +1,8 @@
 from turtle import forward
 import numpy as np
 
+from lamp.activation import Softmax
+
 
 class Loss(object):
     def forward(self, y, yhat):
@@ -20,17 +22,18 @@ class MSELoss(Loss):
         return -2 * (y - yhat)
 
 
-class CrossEntropyLoss(Loss):
+class CELoss(Loss):
     def forward(self, y, yhat):
-        raise NotImplementedError
+        return -np.sum(y * yhat, axis=1)
 
     def backward(self, y, yhat):
-        raise NotImplementedError
+        return -y
 
 
-class CE(Loss):
+class SMCELoss(Loss):
     def forward(self, y, yhat):
-        raise NotImplementedError
+        return -np.sum(y * yhat, axis=1) + np.log(np.exp(yhat), axis=1)
 
     def backward(self, y, yhat):
-        raise NotImplementedError
+        s = Softmax().forward(y)
+        return -y + s * (1 - s)
