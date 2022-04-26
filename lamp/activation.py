@@ -43,4 +43,5 @@ class Softmax(Module):
         pass
 
     def backward_delta(self, X, delta):
-        pass
+        s = self.forward(X)
+        return s * (1 - s) * delta
