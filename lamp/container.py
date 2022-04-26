@@ -1,5 +1,3 @@
-import numpy as np
-
 from itertools import islice
 from collections import OrderedDict
 from typing import Union

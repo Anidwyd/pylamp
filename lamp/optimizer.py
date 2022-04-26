@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class Optimizer:
     def __init__(self, net, loss, eps):
         self.net = net
