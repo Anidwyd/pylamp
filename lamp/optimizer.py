@@ -13,6 +13,9 @@ class Optimizer:
         delta = self.loss.backward(batch_y, yhat)
         self.net.backward(delta)
 
+        self.net.update_parameters(self.eps)
+        self.net.zero_grad()
+
         return loss
 
     def SGD(self, net, batch_x, batch_size, nb_iter):
