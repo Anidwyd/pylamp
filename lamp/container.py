@@ -11,6 +11,7 @@ from .module import Module
 class Sequential(Module):
     def __init__(self, *args: Module):
         super().__init__()
+        self._modules = dict()
 
         if len(args) == 1 and isinstance(args[0], OrderedDict):
             for key, module in args[0].items():
