@@ -1,5 +1,5 @@
 class Optimizer:
-    def __init__(self, net, loss, eps):
+    def __init__(self, net, loss, eps=1e-3):
         self.net = net
         self.loss = loss
         self.eps = eps
@@ -13,7 +13,7 @@ class Optimizer:
         self.net.update_parameters(self.eps)
         self.net.zero_grad()
 
-        return loss
+        return yhat, loss
 
     def SGD(self, net, batch_x, batch_size, nb_iter):
         pass
