@@ -15,5 +15,6 @@ class Optimizer:
 
         return yhat, loss
 
-    def SGD(self, net, batch_x, batch_size, nb_iter):
-        pass
+    def SGD(self, datax, datay, batch_size, nb_iter):
+        for _ in range(100):
+            yhat, loss = self.step(datax, datay)
