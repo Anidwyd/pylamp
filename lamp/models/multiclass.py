@@ -1,15 +1,13 @@
 import numpy as np
 
 from lamp import Sequential, Linear, SMCELoss, Tanh, Sigmoid, Optimizer
+from lamp.utils import add_bias
 
 
 class MultiClass:
-    def add_bias(self, datax):
-        return np.c_[datax, np.ones(datax.shape[0])]
-
     def fit(self, datax, datay, hidden_size, nb_iter=100, gradient_step=1e-3):
         assert datax.shape[0] == datay.shape[0], "X and Y have different batch sizes"
-        datax = self.add_bias(datax)
+        datax = add_bias(datax)
 
         _, input = datax.shape
         _, output = datay.shape
@@ -26,7 +24,7 @@ class MultiClass:
             self.optimizer.step(datax, datay)
 
     def predict(self, datax):
-        datax = self.add_bias(datax)
+        datax = add_bias(datax)
         yhat = self.net.forward(datax)
         return np.argmax(yhat, axis=1)
 
