@@ -36,6 +36,20 @@ class Softmax(Module):
         super().__init__()
 
     def forward(self, X):
+        return np.max(0, X)
+
+    def backward_update_gradient(self, X, delta):
+        pass
+
+    def backward_delta(self, X, delta):
+        return np.where(X < 0, 0, 1)
+
+
+class ReLU(Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, X):
         exp = np.exp(X)
         return exp / exp.sum(axis=1).reshape(-1, 1)
 

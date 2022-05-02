@@ -16,7 +16,7 @@ class Linear(Module):
 
     def forward(self, X):
         assert X.shape[1] == self.input, f"{X.shape[1]} and {self.input} do not match"
-        return np.dot(X, self._parameters)
+        return X @ self._parameters
 
     def backward_update_gradient(self, X, delta):
         assert X.shape[1] == self.input, f"{X.shape[1]} and {self.input} do not match"
@@ -24,4 +24,4 @@ class Linear(Module):
 
     def backward_delta(self, X, delta):
         assert X.shape[1] == self.input, f"{X.shape[1]} and {self.input} do not match"
-        return np.dot(delta, self._parameters.T)
+        return delta @ self._parameters.T
