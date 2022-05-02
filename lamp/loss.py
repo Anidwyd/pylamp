@@ -1,6 +1,6 @@
 import numpy as np
 
-from lamp.activation import Softmax
+from .activation import Softmax
 
 
 class Loss(object):
@@ -13,11 +13,11 @@ class Loss(object):
 
 class MSELoss(Loss):
     def forward(self, y, yhat):
-        assert y.shape == yhat.shape, f"Shapes {y.shape} and {yhat.shape} do not match"
+        assert y.shape == yhat.shape, f"{y.shape} and {yhat.shape} do not match"
         return (np.linalg.norm(y - yhat, axis=1) ** 2).reshape(-1, 1)
 
     def backward(self, y, yhat):
-        assert y.shape == yhat.shape, f"Shapes {y.shape} and {yhat.shape} do not match"
+        assert y.shape == yhat.shape, f"{y.shape} and {yhat.shape} do not match"
         return -2 * (y - yhat)
 
 
