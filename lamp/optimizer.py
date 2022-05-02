@@ -1,7 +1,5 @@
 import numpy as np
 
-from lamp.utils import add_bias, shuffle_batchs
-
 
 class Optimizer:
     def __init__(self, net, loss, eps=1e-3):
@@ -21,9 +19,8 @@ class Optimizer:
         return yhat, loss
 
     def SGD(self, datax, datay, batch_size, nb_iter=100):
-        datax = add_bias(datax)
-
         n = datax.shape[0]
+        batch_size = min(batch_size, n)
         nb_batchs = n // batch_size
 
         inds = np.arange(n)
