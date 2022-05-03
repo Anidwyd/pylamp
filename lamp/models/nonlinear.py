@@ -1,11 +1,11 @@
 import numpy as np
 
-from lamp import Sequential, Linear, SMCELoss, Tanh, Sigmoid, Optimizer
+from lamp import Sequential, Linear, MSELoss, Tanh, Sigmoid, Optimizer
 from lamp.utils import add_bias
 
 
-class MultiClass:
-    def __init__(self, loss=SMCELoss()):
+class NonLinear:
+    def __init__(self, loss=MSELoss()):
         self.loss = loss
         self.loss_list = []
 
@@ -18,7 +18,6 @@ class MultiClass:
         self.net = Sequential(
             Linear(input, hidden), Tanh(), Linear(hidden, output), Sigmoid()
         )
-
         self.optimizer = Optimizer(self.net, self.loss, eps=gradient_step)
 
         if batch_size > 0:
@@ -32,7 +31,7 @@ class MultiClass:
     def predict(self, datax):
         datax = add_bias(datax)
         yhat = self.net.forward(datax)
-        return np.argmax(yhat, axis=1)
+        return np.rint(yhat)
 
     def score(self, datax, datay):
         return np.mean(self.predict(datax) == datay)

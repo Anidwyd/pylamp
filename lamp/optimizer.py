@@ -10,6 +10,7 @@ class Optimizer:
     def step(self, batch_x, batch_y):
         yhat = self.net.forward(batch_x)
         loss = self.loss.forward(batch_y, yhat)
+
         delta = self.loss.backward(batch_y, yhat)
         self.net.backward(delta)
 
@@ -30,7 +31,6 @@ class Optimizer:
 
         i = 0
         for _ in range(nb_iter):
-
             if i > nb_batchs:
                 np.random.shuffle(inds)
                 i = 0
