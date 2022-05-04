@@ -52,10 +52,10 @@ class ReLU(Module):
         super().__init__()
 
     def forward(self, X):
-        return np.max(0, X)
+        return X * (X > 0)
 
     def backward_update_gradient(self, X, delta):
         pass
 
     def backward_delta(self, X, delta):
-        return np.where(X < 0, 0, 1)
+        return 1.0 * (X > 0) * delta
