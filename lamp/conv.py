@@ -23,17 +23,13 @@ class Conv1D(Module):
 
         out = np.zeros((batch, d_out, self.chan_out))
 
-        for img in range(batch):
-            for cout in range(self.chan_out):
-                for i in range(d_out):
-                    for j in range(self.k_size):
-                        for c in range(self.chan_in):
-                            out[img, i, cout] += (
-                                self._parameters[j, c, cout]
-                                * X[img, i * self.stride + j, c]
-                            )
+        for i in range(d_out):
+            out[:, i, :] = np.sum(
+                X[:, i * self.stride : self.k_size + i * self.stride + 1, :, np.newaxis]
+                * self._parameters[np.newaxis, :, :, :],
+                axis=(1, 2),
+            )
 
-        # return self._parameters @ X[:, : d_out * self.stride + self.k_size, :]
         return out
 
     def backward_update_gradient(self, X, delta):
