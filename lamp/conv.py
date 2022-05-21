@@ -21,19 +21,33 @@ class Conv1D(Module):
         batch, length = X.shape[:2]
         d_out = (length - self.k_size) // self.stride + 1
 
-        out = np.zeros((batch, d_out, self.chan_out))
+        res = np.zeros((batch, d_out, self.chan_out))
 
-        for i in range(d_out):
-            t1, t2 = i * self.stride, 2 * (self.k_size // 2) + i * self.stride + 1
-            out[:, i, :] = np.sum(
+        for k in range(d_out):
+            t1, t2 = k * self.stride, 2 * (self.k_size // 2) + k * self.stride + 1
+            res[:, k, :] = np.sum(
                 X[:, t1:t2, :, np.newaxis] * self._parameters[np.newaxis, :, :, :],
                 axis=(1, 2),
             )
 
-        return out
+        return res
 
     def backward_update_gradient(self, X, delta):
         raise NotImplementedError
 
     def backward_delta(self, X, delta):
-        raise NotImplementedError
+        assert X.shape[2] == self.chan_in
+        batch, length = X.shape[:2]
+        d_out = (length - self.k_size) // self.stride + 1
+
+        res = np.zeros((batch, d_out, self.chan_out))
+
+        for k in range(d_out):
+            t1, t2 = k * self.stride, 2 * (self.k_size // 2) + k * self.stride + 1
+            res[:, k, :] = np.sum(
+                np.flip(self._parameters, axis=1)[:, t1:t2, :, np.newaxis]
+                * delta[np.newaxis, :, :, :],
+                axis=(1, 2),
+            )
+
+        return res
