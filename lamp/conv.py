@@ -18,15 +18,15 @@ class Conv1D(Module):
 
     def forward(self, X):
         assert X.shape[2] == self.chan_in
-        batch, length = X.shape[:1]
+        batch, length = X.shape[:2]
         d_out = (length - self.k_size) // self.stride + 1
 
         out = np.zeros((batch, d_out, self.chan_out))
 
         for i in range(d_out):
+            t1, t2 = i * self.stride, 2 * (self.k_size // 2) + i * self.stride + 1
             out[:, i, :] = np.sum(
-                X[:, i * self.stride : self.k_size + i * self.stride + 1, :, np.newaxis]
-                * self._parameters[np.newaxis, :, :, :],
+                X[:, t1:t2, :, np.newaxis] * self._parameters[np.newaxis, :, :, :],
                 axis=(1, 2),
             )
 
