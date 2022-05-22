@@ -19,11 +19,11 @@ class MaxPool1D(Module):
         # for k in range(d_out):
         #     t1, t2 = self.stride * k, 2 * (self.k_size // 2) + k * self.stride + 1
         #     res[:, k, :] = np.amax(X[:, t1:t2, :], axis=1)
-        
+
         for k in range(d_out):
             t1, t2 = self.stride * k, 2 * (self.k_size // 2) + k * self.stride + 1
             self.indx = np.where(X == np.amax(X[:, t1:t2, :], axis=1))
-            res[:, k, :] = X[:,self.indx:,]
+            res[:, k, :] = X[:, self.indx :]
 
         return res
 
@@ -31,13 +31,11 @@ class MaxPool1D(Module):
         pass
 
     def backward_delta(self, X, delta):
-        batch,  d_out, chan_in = delta.shape
+        batch, d_out, chan_in = delta.shape
         length = (d_out - 1) * self.stride + self.k_size
-        
+
         res = np.zeros((batch, length, chan_in))
 
-        res[np.repeat(range(batch),chan_in),self.indx,list(range(chan_in))*batch]
-        
-
-
-        return res
+        return res[
+            np.repeat(range(batch), chan_in), self.indx, list(range(chan_in)) * batch
+        ]
