@@ -26,6 +26,7 @@ class MaxPool1D(Module):
             res[:, k, :] = X[:, self.indx :]
 
         return res
+        
 
     def backward_update_gradient(self, X, delta):
         pass
