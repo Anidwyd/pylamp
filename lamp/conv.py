@@ -40,14 +40,36 @@ class Conv1D(Module):
         batch, length = X.shape[:2]
         d_out = (length - self.k_size) // self.stride + 1
 
-        res = np.zeros((batch, d_out, self.chan_out))
-
+        res = np.zeros((batch, d_out, self.chan_in))
         for k in range(d_out):
-            t1, t2 = k * self.stride, 2 * (self.k_size // 2) + k * self.stride + 1
+            t1, t2 = 0, self.k_size 
+            d1 = - k * self.stride - 2 + self.k_size
+            d2 = - (k * self.stride + 2)
+
+            if k == 0 :
+            
+                t1 = 0
+                t2 = k + 1
+                d1 = None
+                d2 = - 1
+            elif k <= self.k_size -1 :
+
+                t1 = 0
+                t2 = k + 1
+                d1 = - 1
+                d2 = - k -2
+            elif k > d_out - self.k_size -1 :
+
+                t1 = self.k_size - (d_out - k)
+                t2 = self.k_size
+                d1 = - k +2
+                d2 = 0
+
+
             res[:, k, :] = np.sum(
-                np.flip(self._parameters, axis=1)[:, t1:t2, :, np.newaxis]
-                * delta[np.newaxis, :, :, :],
-                axis=(1, 2),
+                np.flip(self._parameters, axis=1)[ np.newaxis, t1:t2, :,  :]
+                * delta[  :, d2:d1, np.newaxis, :],
+                axis=(1,3)
             )
 
         return res
