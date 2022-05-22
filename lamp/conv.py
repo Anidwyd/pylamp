@@ -12,6 +12,7 @@ class Conv1D(Module):
         self.stride = stride
         self._parameters = (np.random.rand(k_size, chan_in, chan_out) * 2 - 1) * 1e-1
         self.zero_grad()
+        
 
     def zero_grad(self):
         self._gradient = np.zeros((self.k_size, self.chan_in, self.chan_out))
@@ -20,7 +21,7 @@ class Conv1D(Module):
         assert X.shape[2] == self.chan_in
         batch, length = X.shape[:2]
         d_out = (length - self.k_size) // self.stride + 1
-
+        self.sizeOut = d_out
         res = np.zeros((batch, d_out, self.chan_out))
 
         for k in range(d_out):
