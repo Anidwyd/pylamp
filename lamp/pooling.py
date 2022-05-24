@@ -8,7 +8,7 @@ class MaxPool1D(Module):
         super().__init__()
         self.k_size = k_size
         self.stride = stride if stride else k_size
-        self.indx = list()
+        
 
     def forward(self, X):
         batch, length, chan_in = X.shape
@@ -20,11 +20,19 @@ class MaxPool1D(Module):
         #     t1, t2 = self.stride * k, 2 * (self.k_size // 2) + k * self.stride + 1
         #     res[:, k, :] = np.amax(X[:, t1:t2, :], axis=1)
 
+        self.indx = []
+
         for k in range(d_out):
             t1, t2 = self.stride * k, 2 * (self.k_size // 2) + k * self.stride + 1
-            self.indx = np.where(X == np.amax(X[:, t1:t2, :], axis=1))
-            res[:, k, :] = X[:, self.indx :]
-
+            tupleA = np.argmax(X[:, t1:t2, :], axis=1)
+            print("tupl",tupleA[0][0])
+           
+            listProv = [0] * (tupleA[0][0].item()-1) + tupleA[0].tolist()# renvois pas 1 mais indice a corriger
+            print(listProv)
+            self.indx += listProv
+            res[:, k, :] = X[:,tupleA[0], :].squeeze(axis = 1)
+            print(self.indx)
+        self.indx = np.array(self.indx)
         return res
         
 
@@ -36,7 +44,6 @@ class MaxPool1D(Module):
         length = (d_out - 1) * self.stride + self.k_size
 
         res = np.zeros((batch, length, chan_in))
-
-        return res[
-            np.repeat(range(batch), chan_in), self.indx, list(range(chan_in)) * batch
-        ]
+        
+        res  = delta * self.indx[np.newaxis,:,np.newaxis]
+        return res
