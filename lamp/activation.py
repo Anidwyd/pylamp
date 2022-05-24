@@ -1,4 +1,5 @@
 import numpy as np
+from torch import exp2_
 
 from .module import Module
 
@@ -8,13 +9,14 @@ class Tanh(Module):
         super().__init__()
 
     def forward(self, X):
-        return np.tanh(X)
+        self.tanhX = np.tanh(X)
+        return self.tanhX
 
     def backward_update_gradient(self, X, delta):
         pass
 
     def backward_delta(self, X, delta):
-        return (1 - np.tanh(X) ** 2) * delta
+        return (1 - self.tanhX ** 2) * delta
 
 
 class Sigmoid(Module):
@@ -22,13 +24,14 @@ class Sigmoid(Module):
         super().__init__()
 
     def forward(self, X):
-        return 1 / (1 + np.exp(-X))
+        self.sigmoid = 1 / (1 + np.exp(-X))
+        return self.sigmoid
 
     def backward_update_gradient(self, X, delta):
         pass
 
     def backward_delta(self, X, delta):
-        return (np.exp(-X) / (1 + np.exp(-X)) ** 2) * delta
+        return self.sigmoid * (1 - self.sigmoid) * delta
 
 
 class Softmax(Module):
@@ -36,15 +39,15 @@ class Softmax(Module):
         super().__init__()
 
     def forward(self, X):
-        exp = np.exp(X)
-        return exp / exp.sum(axis=1).reshape(-1, 1)
+        exp_ = np.exp(X)
+        self.soft = exp_ / exp_.sum(axis=1).reshape(-1, 1)
+        return self.soft
 
     def backward_update_gradient(self, X, delta):
         pass
 
     def backward_delta(self, X, delta):
-        s = self.forward(X)
-        return s * (1 - s) * delta
+        return self.soft * (1 - self.soft) * delta
 
 
 class ReLU(Module):
