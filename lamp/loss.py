@@ -39,9 +39,15 @@ class SMCELoss(Loss):
 
 
 class BCELoss(Loss):
+    # def forward(self, y, yhat):
+    #     return (y - 1) * np.log(1 - yhat + 1e-100) - y * np.log(yhat + 1e-100)
+
+    # def backward(self, y, yhat):
+    #     return (yhat - y) / (yhat * (1 - yhat) + 1e-100)
+
     def forward(self, y, yhat):
-        term_0 = (y - 1) * np.maximum(-100, np.log(1 - yhat))
-        term_1 = y * np.maximum(-100, np.log(yhat))
+        term_0 = (y - 1) * np.maximum(-100, np.log(1 - yhat + 1e-100))
+        term_1 = y * np.maximum(-100, np.log(yhat + 1e-100))
         return term_0 - term_1
 
     def backward(self, y, yhat):
