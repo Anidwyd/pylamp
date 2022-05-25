@@ -38,4 +38,3 @@ def plot_perf(cms, scores, figname, savedir="plots/", savefig=True):
     fig.colorbar(im, ax=axes, location="bottom")
     if savefig:
         plt.savefig(savedir + figname)
-    plt.show()

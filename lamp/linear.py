@@ -4,11 +4,13 @@ from .module import Module
 
 
 class Linear(Module):
-    def __init__(self, input, output):
+    def __init__(self, input, output, init_type="xavier"):
         super().__init__()
         self.input = input
         self.output = output
-        self._parameters = (np.random.rand(input, output) * 2 - 1) / np.sqrt(output)
+        self._parameters = np.random.rand(input, output) * 2 - 1
+        if init_type == "xavier":
+            self._parameters /= np.sqrt(output)
         self.zero_grad()
 
     def zero_grad(self):

@@ -10,26 +10,20 @@ class NonLinear:
         self.train_losses = []
         self.valid_losses = []
 
-    def fit(
-        self,
-        datax,
-        datay,
-        hidden,
-        nb_iter=100,
-        gradient_step=1e-3,
-        batch_size=0,
-        early_stop=1e-3,
-    ):
+    def fit(self, datax, datay, hidden, nb_iter=100, gradient_step=1e-3, batch_size=0):
         datax = add_bias(datax)
 
         assert datax.shape[0] == datay.shape[0], "X and Y have different batch sizes"
         input, output = datax.shape[1], datay.shape[1]
 
         self.net = Sequential(
-            Linear(input, hidden), Tanh(), Linear(hidden, output), Sigmoid()
+            Linear(input, hidden, "basic"),
+            Tanh(),
+            Linear(hidden, output, "basic"),
+            Sigmoid(),
         )
         self.optimizer = Optimizer(
-            self.net, self.loss, eps=gradient_step, early_stop=early_stop
+            self.net, self.loss, eps=gradient_step, early_stop=None
         )
 
         if batch_size > 0:
@@ -37,8 +31,8 @@ class NonLinear:
             return
 
         for _ in range(nb_iter):
-            loss = self.optimizer.step(datax, datay)[0]
-            self.loss_list.append(np.mean(loss))
+            loss = self.optimizer.step(datax, datay)[1]
+            self.train_losses.append(np.mean(loss))
 
     def predict(self, datax):
         datax = add_bias(datax)

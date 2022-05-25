@@ -8,7 +8,6 @@ class MaxPool1D(Module):
         super().__init__()
         self.k_size = k_size
         self.stride = stride if stride else k_size
-        
 
     def forward(self, X):
         batch, length, chan_in = X.shape
@@ -16,25 +15,25 @@ class MaxPool1D(Module):
 
         res = np.zeros((batch, d_out, chan_in))
 
-        # for k in range(d_out):
-        #     t1, t2 = self.stride * k, 2 * (self.k_size // 2) + k * self.stride + 1
-        #     res[:, k, :] = np.amax(X[:, t1:t2, :], axis=1)
+        for k in range(d_out):
+            t1, t2 = self.stride * k, 2 * (self.k_size // 2) + k * self.stride + 1
+            res[:, k, :] = np.amax(X[:, t1:t2, :], axis=1)
 
         self.indx = []
         compte = 0
         for k in range(d_out):
             t1, t2 = self.stride * k, 2 * (self.k_size // 2) + k * self.stride + 1
             tupleA = np.argmax(X[:, t1:t2, :], axis=1)
-            
+
             compte += tupleA[0][0].item()
-            # listProv = [0] * (tupleA[0][0].item()-1) + tupleA[0].tolist()# renvois pas 1 mais indice a corriger
-           
+            # renvois pas 1 mais indice a corriger
+            # listProv = [0] * (tupleA[0][0].item()-1) + tupleA[0].tolist()
+
             self.indx += [compte]
-            res[:, k, :] = X[:,tupleA[0], :].squeeze(axis = 1)
-         
+            res[:, k, :] = X[:, tupleA[0], :].squeeze(axis=1)
+
         self.indx = np.array(self.indx)
         return res
-        
 
     def backward_update_gradient(self, X, delta):
         pass
@@ -45,7 +44,7 @@ class MaxPool1D(Module):
         res = np.zeros((batch, length, chan_in))
         # res  = delta * self.indx[np.newaxis,:,np.newaxis]
 
-        for i,n in enumerate(self.indx):
-            res[:,n,:] = delta[:,i,:] 
+        for i, n in enumerate(self.indx):
+            res[:, n, :] = delta[:, i, :]
 
         return res

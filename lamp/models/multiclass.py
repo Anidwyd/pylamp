@@ -38,7 +38,7 @@ class MultiClass:
 
         for _ in range(nb_iter):
             loss = self.optimizer.step(datax, datay)[1]
-            self.loss_list.append(np.mean(loss))
+            self.train_losses.append(np.mean(loss))
 
     def predict(self, datax):
         datax = add_bias(datax)
