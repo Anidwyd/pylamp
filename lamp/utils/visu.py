@@ -39,7 +39,3 @@ def plot_perf(cms, scores, figname, savedir="plots/", savefig=True):
     if savefig:
         plt.savefig(savedir + figname)
     plt.show()
-
-
-def show_mnist(data):
-    plt.imshow(data.reshape(28, 28), cmap=plt.get_cmap("gray"))

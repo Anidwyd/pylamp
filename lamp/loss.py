@@ -31,11 +31,12 @@ class CELoss(Loss):
 
 class SMCELoss(Loss):
     def forward(self, y, yhat):
-        return -np.sum(y * yhat, axis=1) + np.log(np.sum(np.exp(yhat), axis=1))
+        return np.log(np.sum(np.exp(yhat), axis=1)) - np.sum(y * yhat, axis=1)
 
     def backward(self, y, yhat):
-        s = Softmax().forward(yhat)
-        return -y + s * (1 - s)
+        exp_ = np.exp(yhat)
+        soft = exp_ / exp_.sum(axis=1).reshape(-1, 1)
+        return -y + soft * (1 - soft)
 
 
 class BCELoss(Loss):
@@ -52,3 +53,16 @@ class BCELoss(Loss):
 
     def backward(self, y, yhat):
         return (yhat - y) / np.maximum(yhat * (1 - yhat), 1e-12)
+
+    # def forward(self, y, yhat):
+    #     return -(
+    #         y * np.maximum(np.log(np.maximum(yhat, 1e-10)), -100)
+    #         - (1 - y) * np.maximum(np.log(np.maximum(1 - yhat, 1e-10)), -100)
+    #     )
+
+    # def backward(self, y, yhat):
+
+    #     R1 = -y * (1 / (yhat + 1e-8))
+    #     R2 = (1 - y) * (1 / (1 - (yhat)))
+    #     R = R1 + R2
+    #     return 1 / yhat.shape[1] * R

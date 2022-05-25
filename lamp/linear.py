@@ -8,7 +8,7 @@ class Linear(Module):
         super().__init__()
         self.input = input
         self.output = output
-        self._parameters = np.random.rand(input, output) * 2 - 1
+        self._parameters = (np.random.rand(input, output) * 2 - 1) / np.sqrt(output)
         self.zero_grad()
 
     def zero_grad(self):
