@@ -25,9 +25,9 @@ class Conv1D(Module):
 
         for k in range(self.d_out):
             t1, t2 = k * self.stride, 2 * (self.k_size // 2) + k * self.stride + 1
+            window = X[:, t1:t2, :, np.newaxis]
             res[:, k, :] = np.sum(
-                X[:, t1:t2, :, np.newaxis] * self._parameters[np.newaxis, :, :, :],
-                axis=(1, 2),
+                window * self._parameters[np.newaxis, :, :, :], axis=(1, 2)
             )
 
         return res
