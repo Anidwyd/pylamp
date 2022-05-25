@@ -15,9 +15,3 @@ Clone the repo then :
 ```
 pip install -e .
 ```
-
-We also recommand installing the following librairies :
-[my_gym](https://github.com/osigaud/my_gym),
-[rllab](https://github.com/rll/rllab),
-[pybox2D](https://github.com/pybox2d/pybox2d)
-and osigaud's fork of [salina](https://github.com/osigaud/salina).
