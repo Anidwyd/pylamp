@@ -11,12 +11,13 @@ class MaxPool1D(Module):
 
     def forward(self, X):
         batch, length, chan_in = X.shape
-        d_out = (length - self.k_size) // self.stride + 1
+        self.d_out = (length - self.k_size) // self.stride + 1
 
-        res = np.zeros((batch, d_out, chan_in))
+        res = np.zeros((batch, self.d_out, chan_in))
+
         self.mask = np.zeros((batch, chan_in, length))
 
-        for k in range(d_out):
+        for k in range(self.d_out):
             t1, t2 = self.stride * k, 2 * (self.k_size // 2) + k * self.stride + 1
             window = X[:, t1:t2, :]
             amax = np.amax(window, axis=1)
@@ -26,7 +27,7 @@ class MaxPool1D(Module):
             idx = np.where(X.transpose(0, 2, 1) == amax.reshape(batch, chan_in, 1))
             self.mask[idx] += 1
 
-        self.mask.transpose(0, 2, 1)
+        self.mask = self.mask.transpose(0, 2, 1)
 
         return res
 
@@ -34,11 +35,12 @@ class MaxPool1D(Module):
         pass
 
     def backward_delta(self, X, delta):
-        batch, d_out, chan_in = delta.shape
-        length = (d_out - 1) * self.stride + self.k_size
-        res = np.zeros((batch, length, chan_in))
+        size_diff = X.shape[1] - delta.shape[1]
 
-        for i, n in enumerate(self.indx):
-            res[:, n, :] = delta[:, i, :]
+        d, r = size_diff // 2, size_diff % 2
 
-        return res
+        delta = np.pad(
+            delta, ((0, 0), (d, d + r), (0, 0)), "constant", constant_values=(0, 0)
+        )
+
+        return self.mask * delta

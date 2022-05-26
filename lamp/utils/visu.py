@@ -38,3 +38,13 @@ def plot_perf(cms, scores, figname, savedir="plots/", savefig=True):
     fig.colorbar(im, ax=axes, location="bottom")
     if savefig:
         plt.savefig(savedir + figname)
+
+
+def plot_loss(losses, title=""):
+    timesteps = np.arange(len(losses))
+
+    plt.plot(timesteps, losses)
+    plt.xlabel("loss")
+    plt.ylabel("timesteps")
+    plt.title("")
+    plt.show()

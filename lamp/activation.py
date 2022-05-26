@@ -39,7 +39,8 @@ class Softmax(Module):
         super().__init__()
 
     def forward(self, X):
-        exp_ = np.exp(X)
+        input = X - np.max(X, axis=1, keepdims=True)
+        exp_ = np.exp(input)
         self.soft = exp_ / exp_.sum(axis=1).reshape(-1, 1)
         return self.soft
 
