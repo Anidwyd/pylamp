@@ -1,6 +1,6 @@
 import numpy as np
 
-from lamp import Sequential, Linear, BCELoss, Tanh, Sigmoid, Optimizer
+from lamp import Sequential, Linear, BCELoss, Tanh, Sigmoid, Optimizer, ReLU
 
 
 class AutoEncoder:
@@ -15,6 +15,7 @@ class AutoEncoder:
         datay,
         hidden,
         latent,
+        activation=Sigmoid(),
         nb_iter=100,
         gradient_step=1e-4,
         batch_size=0,
@@ -30,7 +31,7 @@ class AutoEncoder:
             encoder += [Linear(layers[j], layers[j + 1]), Tanh()]
             decoder += [Linear(layers[-j - 1], layers[-j - 2]), Tanh()]
 
-        decoder[-1] = Sigmoid()
+        decoder[-1] = activation
 
         self.net = Sequential(*encoder, *decoder)
         self.optimizer = Optimizer(

@@ -46,5 +46,5 @@ def plot_loss(losses, title=""):
     plt.plot(timesteps, losses)
     plt.xlabel("loss")
     plt.ylabel("timesteps")
-    plt.title("")
+    plt.title(title)
     plt.show()
